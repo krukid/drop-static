@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <script src="https://www.dropbox.com/static/api/dropbox-datastores-1.2-latest.js"></script>
+  <script>
+    var client = new Dropbox.Client({key: 'ht7i4td3m1ge6t1'});
+    
+    client.authenticate({interactive: false}, function(error) {
+      if (error) {
+        console.log('Authentication error', error);
+      }
+    });
+    
+    if (client.isAuthenticated()) {
+      console.log('Authenticated');
+    }
+  </script>
+</head>
+<body>
+  <button onclick="client.authenticate()">Login</button>
+</body>
+</html>
