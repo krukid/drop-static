@@ -11,6 +11,7 @@
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>-->
   <script>
     var client = new Dropbox.Client({key: 'ht7i4td3m1ge6t1'});
+    var _setsTable = null;
     
     client.authenticate({interactive: false}, function(error) {
       if (error) {
@@ -29,12 +30,33 @@
       }
     }
     
+    function $createRows(rr) {
+      $(rr).each(function() {
+        console.log(this);
+      });
+    }
+    
     $(document).ready(function() {
       $('#loading_content').hide();
       if (client.isAuthenticated()) {
         console.log('Authenticated');
         $('#login_content').show();
         client.getAccountInfo({httpCache: true}, onAccountInfo);
+        // setup and load store contents
+        var datastoreManager = client.getDatastoreManager();
+        datastoreManager.openDefaultDatastore(function (error, datastore) {
+            if (!error) {
+                _setsTable = datastore.getTable('sets');
+                var results = _setsTable.query();
+                $createRows(results);
+                datastore.recordsChanged.addListener(function (event) {
+                    console.log('records changed:', event.affectedRecordsForTable('sets'));
+                });
+            }
+            else {
+              console.log('Error opening default datastore', error);
+            }
+        });
       }
       else {
         console.log('Unauthenticated');
@@ -47,6 +69,15 @@
     });
     $(document).on('click', '[data-do=login]', function() {
       client.authenticate();
+    });
+    $(document).on('click', '[data-do=push]', function() {
+      _setsTable.insert({
+          exid: 1,
+          dynamic: 1,
+          reps: 5,
+          weight: 100,
+          created: new Date()
+      });
     });
   </script>
 </head>
@@ -61,6 +92,8 @@
     <div id="login_menu"><a href="#" data-do="logout">Log out <span class="name">User</span></a></div>
     <div id="login_body">
       Welcome
+      
+      <button data-do="push">Add row</button>
     </div>
   </div>
 </body>
