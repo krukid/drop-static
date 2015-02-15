@@ -49,7 +49,7 @@
     }
     
     function $updateRow(rowData, $oldRow) {
-      $oldRow.html($(_r('_t_row', fields(rowData))));
+      $oldRow.replaceWith($(_r('_t_row', fields(rowData))));
     }
     
     function $createRows(rr) {
