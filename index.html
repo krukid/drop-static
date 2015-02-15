@@ -42,19 +42,31 @@
       return data;
     }
     
+    function $appendRow(rowData) {
+      $('#login_content').append(
+          $(_r('_t_row', fields(rowData)))
+      );
+    }
+    
+    function $updateRow(rowData, $oldRow) {
+      $oldRow.html($(_r('_t_row', fields(rowData))));
+    }
+    
     function $createRows(rr) {
       $(rr).each(function() {
-        $('#login_content').append(
-          $(_r('_t_row', fields(this)))
-        );
+        $appendRow(this);
       });
     }
     
     function $updateRows(rr) {
       $(rr).each(function() {
-        $('#login_content').find('p[data-id='+this.getId()+']').html(
-          $(_r('_t_row', fields(this)))
-        );
+        var $row = $('#login_content').find('p[data-id='+this.getId()+']');
+        if ($row.length == 1) {
+          $updateRow(this, $row);
+        }
+        else {
+          $appendRow(this);
+        }
       });
     }
     
