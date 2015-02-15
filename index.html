@@ -34,11 +34,11 @@
       if (client.isAuthenticated()) {
         console.log('Authenticated');
         $('#login_content').show();
+        client.getAccountInfo({httpCache: true}, onAccountInfo);
       }
       else {
         console.log('Unauthenticated');
         $('#logout_content').show();
-        client.getAccountInfo({httpCache: true}, onAccountInfo);
       }
     });
     
