@@ -1,7 +1,14 @@
 <!doctype html>
 <html>
 <head>
+  <style>
+    #logout_content, #login_content {
+      display: none;
+    }
+  </style>
   <script src="https://www.dropbox.com/static/api/dropbox-datastores-1.2-latest.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>-->
   <script>
     var client = new Dropbox.Client({key: 'ht7i4td3m1ge6t1'});
     
@@ -11,12 +18,50 @@
       }
     });
     
-    if (client.isAuthenticated()) {
-      console.log('Authenticated');
+    function onAccountInfo(err, info, json) {
+      $('#login_menu .name').text(info.name);
     }
+    
+    function onSignOut(err) {
+      if (!err) {
+        $('#login_content').hide();
+        $('#logout_content').show();
+      }
+    }
+    
+    $(document).ready(function() {
+      $('#loading_content').hide();
+      if (client.isAuthenticated()) {
+        console.log('Authenticated');
+        $('#login_content').show();
+      }
+      else {
+        console.log('Unauthenticated');
+        $('#logout_content').show();
+        client.getAccountInfo({httpCache: true}, onAccountInfo);
+      }
+    });
+    
+    $(document).on('click', 'a[data-do=logout]', function() {
+      client.signOut({}, onSignOut);
+    });
+    $(document).on('click', '[data-do=login]', function() {
+      client.authenticate();
+    });
   </script>
 </head>
 <body>
-  <button onclick="client.authenticate()">Login</button>
+  <div id="loading_content">
+    Connecting...
+  </div>
+  <div id="logout_content">
+    <button data-do="login">Login</button>
+  </div>
+  <div id="login_content">
+    <div id="login_menu"><a href="#" data-do="logout">Log out <span class="name">User</span></a></div>
+    <div id="login_body">
+      Welcome
+    </div>
+  </div>
 </body>
 </html>
