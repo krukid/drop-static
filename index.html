@@ -8,7 +8,13 @@
   </style>
   <script src="https://www.dropbox.com/static/api/dropbox-datastores-1.2-latest.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>-->
+  <script>
+    function _r(id, data) {
+      return Mustache.render($('#' + id).text(), data);
+    }
+  </script>
   <script>
     var client = new Dropbox.Client({key: 'ht7i4td3m1ge6t1'});
     var _setsTable = null;
@@ -32,7 +38,7 @@
     
     function $createRows(rr) {
       $(rr).each(function() {
-        console.log(this);
+        $(_r('_t_row', this.getFields())).appendTo('#login_content');
       });
     }
     
@@ -64,7 +70,7 @@
       }
     });
     
-    $(document).on('click', 'a[data-do=logout]', function() {
+    $(document).on('click', '[data-do=logout]', function() {
       client.signOut({}, onSignOut);
     });
     $(document).on('click', '[data-do=login]', function() {
@@ -82,6 +88,9 @@
   </script>
 </head>
 <body>
+  <script type="text/mustache" id="_t_row">
+    <p>this is an <b>{{exid}}</b> of weight <b>{{weight}}</b></p>
+  </script>
   <div id="loading_content">
     Connecting...
   </div>
