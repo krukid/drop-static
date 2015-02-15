@@ -102,7 +102,7 @@
       });
     });
     $(document).on('click', '[data-do=change]', function() {
-        var id = $(this).closest('data-id').data('id');
+        var id = $(this).closest('[data-id]').data('id');
         var row = _setsTable.get(id);
         if (row) {
           row.set('weight', row.get('weight') + 5);
